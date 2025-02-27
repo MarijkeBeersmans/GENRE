@@ -93,6 +93,61 @@ def create_input(doc, max_length, start_delimiter, end_delimiter):
 
     return input_
 
+def create_input_blink(doc, max_length, start_delimiter, end_delimiter):
+    print(doc)
+    if all(
+        e in doc for e in ("context_left", "mention", "context_right")
+    ):
+        print('here')
+        doc_Input = doc['context_left'].split() + doc['mention'].split() + doc['context_right'].split()
+        if len(doc_Input) <= max_length:
+            input_ = (
+                doc["context_left"]
+                + " {} ".format(start_delimiter)
+                + doc["mention"]
+                + " {} ".format(end_delimiter)
+                + doc["context_right"]
+            )
+        elif len(doc["context_left"].split(" ")) <= max_length // 2:
+            input_ = (
+                doc["context_left"]
+                + " {} ".format(start_delimiter)
+                + doc["mention"]
+                + " {} ".format(end_delimiter)
+                + " ".join(
+                    doc["context_right"].split(" ")[
+                        : max_length - len(doc["context_left"].split(" "))
+                    ]
+                )
+            )
+        elif len(doc["context_right"].split(" ")) <= max_length // 2:
+            input_ = (
+                " ".join(
+                    doc["context_left"].split(" ")[
+                        len(doc["context_right"].split(" ")) - max_length :
+                    ]
+                )
+                + " {} ".format(start_delimiter)
+                + doc["mention"]
+                + " {} ".format(end_delimiter)
+                + doc["right_context"]
+            )
+        else:
+            input_ = (
+                " ".join(doc["context_left"].split(" ")[-max_length // 2 :])
+                + " {} ".format(start_delimiter)
+                + doc["mention"]
+                + " {} ".format(end_delimiter)
+                + " ".join(doc["context_right"].split(" ")[: max_length // 2])
+            )
+    else:
+        print('not here')
+        input_ = ''
+
+    input_ = html.unescape(input_)
+
+    return input_
+
 
 def get_entity_spans_pre_processing(sentences):
     return [

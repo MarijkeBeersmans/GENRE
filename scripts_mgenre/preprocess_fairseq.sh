@@ -15,10 +15,10 @@ echo "Processing ${DATASET}"
 
 for SPLIT in train dev; do
     for LANG in "source" "target"; do
-        python scripts/preprocess_sentencepiece.py --m ${MODEL} \
+        python preprocess_sentencepiece.py --m ${MODEL} \
         --inputs ${DATASET}/${SPLIT}.${LANG} \
         --outputs ${DATASET}/${SPLIT}.spm.${LANG} \
-        --workers 40
+        # --workers 40
     done
 done
 
@@ -32,4 +32,4 @@ fairseq-preprocess \
   --thresholdsrc 0 \
   --srcdict ${DICT} \
   --tgtdict ${DICT} \
-  --workers 40
+#   --workers 40

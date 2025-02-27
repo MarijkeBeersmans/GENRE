@@ -5,6 +5,7 @@ src
 predictions
 models 
 notebooks
+GENREenv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

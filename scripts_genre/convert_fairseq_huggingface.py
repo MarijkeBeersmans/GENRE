@@ -1,5 +1,7 @@
 import os
-
+import sys
+sys.path.append("/home/pricie/marijkeb/github/GENRE/fairseq")
+sys.path.append("/home/pricie/marijkeb/github/GENRE")
 import torch
 from transformers import (
     BartConfig,
@@ -34,8 +36,23 @@ def make_linear_from_emb(emb):
 
 # Load
 
-fairseq_path = "../models/fairseq_entity_disambiguation_aidayago"
-hf_path = "../models/hf_entity_disambiguation_aidayago"
+
+fairseq_path = "../models/fairseq_multilingual_entity_disambiguation"
+hf_path = "../models/hf_multilingual_entity_disambiguation"
+# fairseq_path = "../models/fairseq_entity_disambiguation_aidayago"
+# hf_path = "../models/hf_entity_disambiguation_aidayago"
+
+# import omegaconf
+# import collections
+# from typing import Any
+
+# torch.serialization.add_safe_globals([omegaconf.dictconfig.DictConfig])
+# torch.serialization.add_safe_globals([omegaconf.base.ContainerMetadata])
+# torch.serialization.add_safe_globals([dict])
+# torch.serialization.add_safe_globals([collections.defaultdict])
+# torch.serialization.add_safe_globals([Any])
+# torch.serialization.add_safe_globals([omegaconf.nodes.AnyNode])
+# torch.serialization.add_safe_globals([omegaconf.base.Metadata])
 
 fairseq_model = GENRE.from_pretrained(fairseq_path).eval()
 config = BartConfig(vocab_size=50264)
