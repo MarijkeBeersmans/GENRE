@@ -85,7 +85,7 @@ if __name__ == "__main__":
     logging.info("Loading {}".format(args.input_filename))
     with jsonlines.open(args.input_filename) as f:
         dataset = [e for e in f]
-    split_name = os.path.basename(args.input_filename).split("_")[1]
+    split_name = os.path.basename(args.input_filename)
 
     source, target = convert_blink_to_fairseq(
         dataset,
