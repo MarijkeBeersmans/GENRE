@@ -18,7 +18,7 @@ for SPLIT in train dev; do
         python preprocess_sentencepiece.py --m ${MODEL} \
         --inputs ${DATASET}/${SPLIT}.${LANG} \
         --outputs ${DATASET}/${SPLIT}.spm.${LANG} \
-        # --workers 40
+        --workers 10
     done
 done
 
