@@ -6,10 +6,13 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+DATASET="../data/test"
+NAME="test"
+
 fairseq-train $DATASET/bin/ \
     --save-dir models/$NAME \
     --tensorboard-logdir tensorboard_logs/$NAME \
-    --restore-file models/bart.large/model.pt \
+    --restore-file models/fairseq_multilingual_entity_disambiguation/model.pt \
     --arch bart_large  \
     --task translation  \
     --criterion label_smoothed_cross_entropy  \
@@ -46,3 +49,5 @@ fairseq-train $DATASET/bin/ \
     --patience 200 \
     --encoder-normalize-before \
     --decoder-normalize-before
+
+    # --restore-file models/bart.large/model.pt \

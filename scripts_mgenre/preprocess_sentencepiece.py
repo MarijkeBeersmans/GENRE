@@ -12,15 +12,21 @@ from collections import Counter
 from multiprocessing import Pool
 
 import sentencepiece as spm
+import logging
 
 
-class MultiprocessingEncoder(object):
+logging.basicConfig(level=logging.DEBUG)
+
+class MultiprocessingEncoder:
     def __init__(self, args):
         self.args = args
 
     def initializer(self):
         global sp, old2new
+        logging.debug(f"intializing sp with model {self.args.model}")
         sp = spm.SentencePieceProcessor(model_file=self.args.model)
+        logging.debug(f"sp initialized with vocab size {sp.vocab_size()}")
+
         old2new = None
         if self.args.product_vocab_size is not None:
             assert sp.vocab_size() <= self.args.product_vocab_size**2
@@ -42,18 +48,17 @@ class MultiprocessingEncoder(object):
         return list(map(str, ids))
 
     def encode_lines(self, lines):
-        """
-        Encode a set of lines. All lines will be encoded together.
-        """
         enc_lines = []
-        for line in lines:
+        for i, line in enumerate(lines):
+            logging.debug(f"Processing line {i}: {line}")
             line = line.strip()
             if len(line) == 0 and not self.args.keep_empty:
-                return ["EMPTY", None]
+                logging.debug("Skipping empty line")
+                continue
             tokens = self.encode(line)
             enc_lines.append(" ".join(tokens))
+        logging.debug("Finished processing batch")
         return ["PASS", enc_lines]
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -101,9 +106,12 @@ if __name__ == "__main__":
         ]
 
         encoder = MultiprocessingEncoder(args)
+        print('encoder')
         pool = Pool(args.workers, initializer=encoder.initializer)
+        print('pool')
+        # print(inputs[0].readlines())
+        # encoded_lines = encoder.encode_lines(inputs[0].readlines())
         encoded_lines = pool.imap(encoder.encode_lines, zip(*inputs), 100)
-
         stats = Counter()
         for i, (filt, enc_lines) in enumerate(encoded_lines, start=1):
             if filt == "PASS":
@@ -116,3 +124,7 @@ if __name__ == "__main__":
 
         for k, v in stats.most_common():
             print("[{}] filtered {} lines".format(k, v), file=sys.stderr)
+
+        # Close the pool and wait for the worker processes to terminate
+        pool.close()
+        pool.join()

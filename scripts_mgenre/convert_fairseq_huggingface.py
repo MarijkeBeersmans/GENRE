@@ -48,6 +48,7 @@ hf_tokenizer.save_pretrained(hf_path)
 state_dict = fairseq_model.model.state_dict()
 remove_ignore_keys_(state_dict)
 state_dict["shared.weight"] = state_dict["decoder.embed_tokens.weight"]
+
 hf_model.model.load_state_dict(state_dict)
 hf_model.lm_head = make_linear_from_emb(hf_model.model.shared)
 hf_model.save_pretrained(hf_path)

@@ -11,7 +11,7 @@ from transformers import (
     TFBartForConditionalGeneration,
 )
 
-from genre.fairseq_model import GENRE
+from genre.fairseq_model import mGENRE
 
 
 def remove_ignore_keys_(state_dict):
@@ -54,8 +54,8 @@ hf_path = "../models/hf_multilingual_entity_disambiguation"
 # torch.serialization.add_safe_globals([omegaconf.nodes.AnyNode])
 # torch.serialization.add_safe_globals([omegaconf.base.Metadata])
 
-fairseq_model = GENRE.from_pretrained(fairseq_path).eval()
-config = BartConfig(vocab_size=50264)
+fairseq_model = mGENRE.from_pretrained(fairseq_path).eval()
+config = BartConfig(vocab_size=256001)
 hf_model = BartForConditionalGeneration(config).eval()
 hf_tokenizer = BartTokenizer.from_pretrained("facebook/bart-large")
 hf_tokenizer.save_pretrained(hf_path)
